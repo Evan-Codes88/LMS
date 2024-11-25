@@ -1,4 +1,5 @@
 from init import db
+from init import ma
 
 class Student(db.Model):
     __tablename__ = "students"
@@ -7,3 +8,10 @@ class Student(db.Model):
     name = db.Column(db.String(100), nullable = False)
     email = db.Column(db.String(100), nullable = False, unique = True)
     address = db.Column(db.String(100))
+
+class StudentSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "name", "email", "address")
+
+student_schema = StudentSchema()
+students_schema = StudentSchema(many = True)
