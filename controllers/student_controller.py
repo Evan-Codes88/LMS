@@ -4,7 +4,7 @@ from psycopg2 import errorcodes
 from init import db
 from models.student import Student, students_schema, student_schema
 
-students_bp = Blueprint("students", __name__, url_prefix="/students")
+students_bp = Blueprint("students", __name__, url_prefix = "/students")
 
 # Read all - /students - GET
 @students_bp.route("/")

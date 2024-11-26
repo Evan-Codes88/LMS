@@ -1,5 +1,4 @@
-from init import db
-from init import ma
+from init import db, ma
 
 class Student(db.Model):
     __tablename__ = "students"
