@@ -70,6 +70,7 @@ def seed_tables():
     ]
 
     db.session.add_all(teachers)
+    
     db.session.commit()
 
     print("Tables Seeded")
