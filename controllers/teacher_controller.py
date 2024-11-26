@@ -9,7 +9,11 @@ teachers_bp = Blueprint("teachers", __name__, url_prefix = "/teachers")
 # Read all - /teachers - GET
 @teachers_bp.route("/")
 def get_teachers():
-    stmt = db.select(Teacher)
+    department = request.args.get("department")
+    if department:
+        stmt = db.select(Teacher).filter_by(department = department)
+    else:
+        stmt = db.select(Teacher)
     teachers_list = db.session.scalars(stmt)
     data = teachers_schema.dump(teachers_list)
     return data
@@ -25,7 +29,6 @@ def get_teacher(teacher_id):
     else:
         return {"message": f"Teacher with id {teacher_id} does not exist"}, 404
     
-
 # Create - /teachers - POST
 @teachers_bp.route("/", methods = ["POST"])
 def create_teacher():
