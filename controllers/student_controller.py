@@ -10,7 +10,7 @@ students_bp = Blueprint("students", __name__, url_prefix="/students")
 
 
 # Update - /students/id - PUT, PATCH
-# Delete - /students/id - DELETE
+
 
 # Read all - /students - GET
 @students_bp.route("/")
@@ -56,3 +56,21 @@ def create_student():
         
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"message": "Email address already in use"}, 409
+        
+# Delete - /students/id - DELETE
+@students_bp.route("/<int:student_id>", methods = ["DELETE"])
+def delete_student(student_id):
+    # Find the student to be deleted using id
+    stmt = db.select(Student).filter_by(id = student_id)
+    student = db.session.scalar(stmt)
+    # If exists
+        # Delete
+        # Return Response
+    if student:
+        db.session.delete(student)
+        db.session.commit()
+        return {"message": f"Student '{student.name}' was successfully deleted"}
+    # Else
+        # Return Error Response
+    else:
+        return {"message": f"Student with id {student_id} does not exist"}, 404
