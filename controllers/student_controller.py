@@ -27,7 +27,7 @@ def get_student(student_id):
     
 
 # Create - /students - POST
-@students_bp.route("/", methods=["POST"])
+@students_bp.route("/", methods = ["POST"])
 def create_student():
     try:
         # get information from the request body
