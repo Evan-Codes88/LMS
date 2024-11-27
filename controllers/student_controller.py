@@ -9,7 +9,7 @@ students_bp = Blueprint("students", __name__, url_prefix = "/students")
 # Read all - /students - GET
 @students_bp.route("/")
 def get_students():
-    stmt = db.select(Student)
+    stmt = db.select(Student).order_by(Student.id)
     students_list = db.session.scalars(stmt)
     data = students_schema.dump(students_list)
     return data
