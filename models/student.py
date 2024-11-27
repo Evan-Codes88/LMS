@@ -9,6 +9,7 @@ class Student(db.Model):
     address = db.Column(db.String(100))
 
 class StudentSchema(ma.Schema):
+    ordered = True
     class Meta:
         fields = ("id", "name", "email", "address")
 
