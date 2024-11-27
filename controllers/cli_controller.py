@@ -87,7 +87,7 @@ def seed_tables():
         Course(
             name = "Course 3",
             duration = 2,
-            teacher_id = teachers[6].id
+            teacher_id = teachers[1].id
         ),
         Course(
             name = "Course 4",
@@ -97,7 +97,7 @@ def seed_tables():
         Course(
             name = "Course 5",
             duration = 1.5,
-            teacher_id = teachers[4].id
+            teacher_id = teachers[1].id
         )
     ]
 
