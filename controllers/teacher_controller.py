@@ -11,9 +11,9 @@ teachers_bp = Blueprint("teachers", __name__, url_prefix = "/teachers")
 def get_teachers():
     department = request.args.get("department")
     if department:
-        stmt = db.select(Teacher).filter_by(department = department)
+        stmt = db.select(Teacher).filter_by(department = department).order_by(Teacher.id)
     else:
-        stmt = db.select(Teacher)
+        stmt = db.select(Teacher).order_by(Teacher.id)
     teachers_list = db.session.scalars(stmt)
     data = teachers_schema.dump(teachers_list)
     return data
