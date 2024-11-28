@@ -59,3 +59,22 @@ def delete_course(course_id):
         return {"message": f"course {course.id} was successfully deleted"}
     else:
         return {"message": f"Course with id {course.id} does not exist"}, 404
+    
+# Update - /courses/id - PUT, PATCH
+@courses_bp.route("/<int:course_id>", methods = ["PUT", "PATCH"])
+def update_course(course_id):
+    try:
+        stmt = db.select(Course).filter_by(id = course_id)
+        course = db.session.scalar(stmt)
+        body_data = request.get_json()
+
+        if course:
+            course.name = body_data.get("name") or course.name
+            course.duration = body_data.get("duration") or course.duration
+            course.teacher_id = body_data.get("teacher_id") or course.teacher_id
+            db.session.commit()
+            return course_schema.dump(course)
+        else:
+            return {"message": f"course with id {course_id} does not exist"}, 404
+    except IntegrityError as err:
+        return {"message": "Name already in use"}, 409
