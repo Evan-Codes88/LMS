@@ -26,3 +26,23 @@ def get_course(course_id):
     else:
         return {"message": f"Course with id {course_id} does not exist"}
     
+# Create one - /courses - POST
+@courses_bp.route("/", methods = ["POST"])
+def create_course():
+    try:
+        body_data = request.get_json()
+        new_course = Course(
+            name = body_data.get("name"),
+            duration = body_data.get("duration"),
+            teacher_id = body_data.get("teacher_id")
+        )
+
+        db.session.add(new_course)
+        db.session.commit()
+        
+        return course_schema.dump(new_course), 201
+    except IntegrityError as err:
+        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+            return {"message": "Course Name already exists"}
+        if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
+            return {"message": f"The field '{err.orig.diag.column_name}' is required"}
