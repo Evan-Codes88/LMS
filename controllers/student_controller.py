@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 from psycopg2 import errorcodes
 from init import db
 from models.student import Student, students_schema, student_schema
@@ -51,6 +51,8 @@ def create_student():
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             # unique constraint violation
             return {"message": "Email address already in use"}, 409
+    except DataError as err:
+        return {"message": "Invalid Syntax"}, 404
         
 # Delete - /students/id - DELETE
 @students_bp.route("/<int:student_id>", methods = ["DELETE"])
@@ -90,3 +92,5 @@ def update_student(student_id):
 
     except IntegrityError as err:
         return {"message": "Email address already in use"}, 409
+    except DataError as err:
+        return {"message": "Invalid Syntax"}, 404

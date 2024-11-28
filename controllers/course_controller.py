@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 from psycopg2 import errorcodes
 from init import db
 from models.course import Course, course_schema, courses_schema
@@ -43,9 +43,11 @@ def create_course():
         return course_schema.dump(new_course), 201
     except IntegrityError as err:
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
-            return {"message": "Course Name already exists"}
+            return {"message": "Course Name already exists"}, 409
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
-            return {"message": f"The field '{err.orig.diag.column_name}' is required"}
+            return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
+    except DataError as err:
+        return {"message": "Invalid Syntax"}, 404
         
 
 # Delete - /courses/id - DELETE
@@ -78,3 +80,5 @@ def update_course(course_id):
             return {"message": f"course with id {course_id} does not exist"}, 404
     except IntegrityError as err:
         return {"message": "Name already in use"}, 409
+    except DataError as err:
+        return {"message": "Invalid Syntax"}, 404

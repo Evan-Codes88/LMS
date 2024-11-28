@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 from psycopg2 import errorcodes
 from init import db
 from models.teacher import Teacher, teacher_schema, teachers_schema
@@ -47,6 +47,8 @@ def create_teacher():
             return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"message": "This name Teacher already exists"}
+    except DataError as err:
+        return {"message": "Invalid Syntax"}, 404
 
 # Delete - /teachers - DELETE
 @teachers_bp.route("/<int:teacher_id>", methods = ["DELETE"])
@@ -79,3 +81,5 @@ def update_teacher(teacher_id):
             return {"message": f"Teacher with id {teacher_id} does not exist"}, 404
     except ImportError as err:
         return {"message": "Email address already in use"}, 409
+    except DataError as err:
+        return {"message": "Invalid Syntax"}, 404
