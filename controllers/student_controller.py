@@ -52,7 +52,7 @@ def create_student():
             # unique constraint violation
             return {"message": "Email address already in use"}, 409
     except DataError as err:
-        return {"message": "Invalid Syntax"}, 404
+        return {"message": err.orig.diag.message_primary}, 409
         
 # Delete - /students/id - DELETE
 @students_bp.route("/<int:student_id>", methods = ["DELETE"])
@@ -93,4 +93,4 @@ def update_student(student_id):
     except IntegrityError as err:
         return {"message": "Email address already in use"}, 409
     except DataError as err:
-        return {"message": "Invalid Syntax"}, 404
+        return {"message": err.orig.diag.message_primary}, 409

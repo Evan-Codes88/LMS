@@ -48,7 +48,7 @@ def create_teacher():
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"message": "This name Teacher already exists"}
     except DataError as err:
-        return {"message": "Invalid Syntax"}, 404
+        return {"message": err.orig.diag.message_primary}, 409
 
 # Delete - /teachers - DELETE
 @teachers_bp.route("/<int:teacher_id>", methods = ["DELETE"])
@@ -82,4 +82,4 @@ def update_teacher(teacher_id):
     except ImportError as err:
         return {"message": "Email address already in use"}, 409
     except DataError as err:
-        return {"message": "Invalid Syntax"}, 404
+        return {"message": err.orig.diag.message_primary}, 409

@@ -47,7 +47,7 @@ def create_course():
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
     except DataError as err:
-        return {"message": "Invalid Syntax"}, 404
+        return {"message": err.orig.diag.message_primary}, 409
         
 
 # Delete - /courses/id - DELETE
@@ -81,4 +81,4 @@ def update_course(course_id):
     except IntegrityError as err:
         return {"message": "Name already in use"}, 409
     except DataError as err:
-        return {"message": "Invalid Syntax"}, 404
+        return {"message": err.orig.diag.message_primary}, 409
