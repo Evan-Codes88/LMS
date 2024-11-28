@@ -26,7 +26,7 @@ def get_course(course_id):
     else:
         return {"message": f"Course with id {course_id} does not exist"}
     
-# Create one - /courses - POST
+# Create - /courses - POST
 @courses_bp.route("/", methods = ["POST"])
 def create_course():
     try:
@@ -46,3 +46,16 @@ def create_course():
             return {"message": "Course Name already exists"}
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"message": f"The field '{err.orig.diag.column_name}' is required"}
+        
+
+# Delete - /courses/id - DELETE
+@courses_bp.route("/<int:course_id>", methods = ["DELETE"])
+def delete_course(course_id):
+    stmt = db.select(Course).filter_by(id = course_id)
+    course = db.session.scalar(stmt)
+    if course:
+        db.session.delete(course)
+        db.session.commit()
+        return {"message": f"course {course.id} was successfully deleted"}
+    else:
+        return {"message": f"Course with id {course.id} does not exist"}, 404
