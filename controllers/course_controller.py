@@ -9,7 +9,7 @@ courses_bp = Blueprint("courses", __name__, url_prefix = "/courses")
 # Read all - /courses - GET
 @courses_bp.route("/")
 def get_courses():
-    stmt = db.select(Course)
+    stmt = db.select(Course).order_by(Course.id)
     courses_list = db.session.scalars(stmt)
     data = courses_schema.dump(courses_list)
     return data
@@ -24,7 +24,7 @@ def get_course(course_id):
         data = course_schema.dump(course)
         return data
     else:
-        return {"message": f"Course with id {course_id} does not exist"}
+        return {"message": f"Course with id {course_id} does not exist"}, 404
     
 # Create - /courses - POST
 @courses_bp.route("/", methods = ["POST"])
