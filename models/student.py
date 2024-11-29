@@ -4,16 +4,15 @@ from marshmallow import fields
 class Student(db.Model):
     __tablename__ = "students"
 
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(100), nullable = False)
-    email = db.Column(db.String(100), nullable = False, unique = True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False, unique=True)
     address = db.Column(db.String(100))
 
-    enrolments = db.relationship("Enrolements", back_populates = "student", cascade = "all, delete")
+    enrolments = db.relationship("Enrolment", back_populates="student", cascade="all, delete-orphan")
 
 class StudentSchema(ma.Schema):
-    ordered = True
-    enrolments = fields.List(fields.Nested("EnrolmentSchema", exclude = ["student"]))
+    enrolments = fields.List(fields.Nested("EnrolmentSchema", exclude=["student"]))
     class Meta:
         fields = ("id", "name", "email", "address", "enrolments")
 

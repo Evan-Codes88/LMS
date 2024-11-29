@@ -5,17 +5,17 @@ class Course(db.Model):
     __tablename__ = "courses"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable = False, unique = True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
     duration = db.Column(db.Float)
     teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
 
-    teacher = db.relationship("Teacher", back_populates = "courses")
-    enrolments = db.relationship("Enrolment", back_populates = "course", cascade = "all, delete")
+    teacher = db.relationship("Teacher", back_populates="courses", cascade="all, delete")
+    enrolments = db.relationship("Enrolment", back_populates="course", cascade="all, delete-orphan")
 
 class CourseSchema(ma.Schema):
-    ordered = True
-    teacher = fields.Nested("TeacherSchema", only = ["name", "department"])
-    enrolment = fields.List(fields.Nested("EnrolmentSchema", exclude = ["course"]))
+    teacher = fields.Nested("TeacherSchema", only=["name", "department"])
+    enrolments = fields.List(fields.Nested("EnrolmentSchema", exclude=["course"]))
+
     class Meta:
         fields = ("id", "name", "duration", "teacher_id", "teacher", "enrolments")
 
