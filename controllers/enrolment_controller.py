@@ -33,19 +33,17 @@ def get_enrolment(enrolment_id):
 def create_enrolment():
     try:
         body_data = request.get_json()
-        new_enrolment = Enrolment(
-            enroment_date = body_data.get("enrolment_date"),
+        new_enrolment = Enrolment( 
             student_id = body_data.get("student_id"),
-            course_id = body_data.get("course_id")
+            course_id = body_data.get("course_id"),
+            enrolment_date = body_data.get("enrolment_date") 
         )
 
-        db.session.add_all(new_enrolment)
+        db.session.add (new_enrolment)
         db.session.commit()
-
         return enrolment_schema.dump(new_enrolment), 201
     except IntegrityError as err:
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
-    except DataError as err:
-        return {"message": err.orig.diag.message_primary}, 409
-
+        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+            return {"message": err.orig.diag.message_detail}, 409
