@@ -58,4 +58,6 @@ def delete_enrolment(enrolment_id):
         db.session.delete(enrolment)
         db.session.commit()
         return {"message": f"Enrolment with id {enrolment.id} has been successfully deleted"}
+    else:
+        return {"message": f"Enrolment with id {enrolment.id} does not exist"}
     
