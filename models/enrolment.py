@@ -12,8 +12,8 @@ class Enrolment(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
 
-    student = db.relationship("Student", back_populates="enrolments")
-    course = db.relationship("Course", back_populates="enrolments")
+    student = db.relationship("Student", back_populates="enrolments", cascade="all, delete")
+    course = db.relationship("Course", back_populates="enrolments", cascade="all, delete")
 
 class EnrolmentSchema(ma.Schema):
     student = fields.Nested("StudentSchema", only=["name", "email"])
