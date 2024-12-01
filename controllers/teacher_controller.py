@@ -55,7 +55,6 @@ def create_teacher():
 def delete_teacher(teacher_id):
     stmt = db.select(Teacher).filter_by(id = teacher_id)
     teacher = db.session.scalar(stmt)
-
     if teacher:
         db.session.delete(teacher)
         db.session.commit()
